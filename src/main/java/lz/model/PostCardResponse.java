@@ -27,4 +27,12 @@ public class PostCardResponse {
     public void setCard(Card card) {
 	this.card = card;
     }
+
+    @Override
+    public String toString() {
+        return "PostCardResponse{" +
+                "message='" + message + '\'' +
+                ", card=" + card +
+                '}';
+    }
 }

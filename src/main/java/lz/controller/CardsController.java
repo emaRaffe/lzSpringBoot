@@ -53,19 +53,23 @@ public class CardsController {
     }
 
     @PostMapping(path = "/")
-    public ResponseEntity<?> addCard(@Valid @ModelAttribute Card card, Errors errors, HttpServletRequest request) {
+    public String addCard(@Valid @ModelAttribute Card card, Errors errors, HttpServletRequest request) {
 	if (errors.hasErrors()) {
-	    return ResponseEntity.badRequest().body(createResult(null, errors));
+	    return homePageRedirect("Input invalid");
 	}
 
 	final String sessionId = request.getSession().getId();
 	final CardService createCardService = serviceFactory.createCardService();
 	createCardService.createCard(card, sessionId);
 
-	return ResponseEntity.ok(createResult(card, null));
+	return homePageRedirect("Done");
     }
 
-    private PostCardResponse createResult(Card card, Errors errors) {
+	private String homePageRedirect(String result) {
+    	return "<script>alert('"+result+"'); window.location = '/'</script>";
+	}
+
+	private PostCardResponse createResult(Card card, Errors errors) {
 	if (card != null) {
 	    return new PostCardResponse(card, "success");
 	} else if (errors != null) {
@@ -79,8 +83,7 @@ public class CardsController {
     public String uploadCards(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes,
 	    HttpServletRequest request) {
 	if (file.isEmpty()) {
-	    redirectAttributes.addFlashAttribute("message", "Please select a file to upload");
-	    return "<script>window.location = '/'</script>";
+	    return homePageRedirect("File missing");
 	}
 
 	final String sessionId = request.getSession().getId();
@@ -94,7 +97,7 @@ public class CardsController {
 	redirectAttributes.addFlashAttribute("message",
 		"You successfully uploaded '" + file.getOriginalFilename() + "'");
 
-	return "<script>window.location = '/'</script>";
+	return homePageRedirect("Done");
     }
 
     @PostMapping("/destroy")
@@ -105,6 +108,6 @@ public class CardsController {
 	LOG.info("deleting data for session id: " + sessionId);
 
 	cardService.deleteCards(sessionId);
-	return "<script>window.location = '/'</script>";
+	return homePageRedirect("Done");
     }
 }

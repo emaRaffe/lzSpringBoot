@@ -1,6 +1,7 @@
 package lz.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.text.ParseException;
@@ -40,8 +41,8 @@ public class CardsControllerSTest {
 	final CardsResponse cardsResponse = restTemplate.getForObject("/api/cards/", CardsResponse.class);
 	final Set<Card> cards = cardsResponse.getCards();
 
-	assertThat(cards, CoreMatchers.hasItems(card1Masked));
-//	assertThat(body).isEqualTo("Hello World");
+        Card card= cards.iterator().next();
+        assertEquals(card.getCardNumber(), card1Masked.getCardNumber());
     }
 
     @Test
